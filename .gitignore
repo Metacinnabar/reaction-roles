@@ -11,3 +11,6 @@ Cargo.lock
 
 # Intellij Rust
 .idea/
+
+# dotenv crate
+.env
