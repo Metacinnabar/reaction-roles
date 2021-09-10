@@ -25,3 +25,10 @@ DISCORD_TOKEN=TOKEN
 ```
 **`DISCORD_TOKEN`** - Discord bot token for your bot  
  - [How do I get a Discord bot token?](https://discordjs.guide/preparations/setting-up-a-bot-application.html)
+
+## Todo
+ - [ ] Json config for message id, emotes, and roles
+ - [ ] Generalize all code
+ - [ ] Properly log events to console
+ - [ ] (Optionally) Log reactions to a channel
+ - [ ] (Optionally) DM the user who reacted
