@@ -1,9 +1,13 @@
 [package]
 name = "reaction-roles"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2018"
+authors = ["GoodPro712"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serenity = "0.10"
+serenity = { version = "0.10", default-features = false, features = ["client", "gateway", "rustls_backend", "model"] }
+dotenv = "0.15"
+tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
+lazy_static = "1.4.0"
