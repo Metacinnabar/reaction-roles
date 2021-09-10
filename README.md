@@ -12,10 +12,10 @@
 \- This is my first time using Rust, so this code likely won't have the best practices in it.
 
 ## Usage
+\- **Assuming [Rust](https://www.rust-lang.org/tools/install/) is installed.**
  - Clone the repository (`git clone https://github.com/GoodPro712/reaction-roles.git && cd reaction-roles`)
  - Rename `example.env` to `.env` (`mv example.env .env`)
- - Edit `.env` (`nano .env`) (see [dotenv](#dotenv) for more)
- - Build the bot and install crates with cargo (`cargo install --path .`)
+ - Edit `.env` following the example at [dotenv](#dotenv) (`nano .env`)
  - Run the bot with cargo (`cargo run`)
 
 ## Dotenv
@@ -25,3 +25,10 @@ DISCORD_TOKEN=TOKEN
 ```
 **`DISCORD_TOKEN`** - Discord bot token for your bot  
  - [How do I get a Discord bot token?](https://discordjs.guide/preparations/setting-up-a-bot-application.html)
+
+## Todo
+ - [ ] Json config for message id, emotes, and roles
+ - [ ] Generalize all code
+ - [ ] Properly log events to console
+ - [ ] (Optionally) Log reactions to a channel
+ - [ ] (Optionally) DM the user who reacted
