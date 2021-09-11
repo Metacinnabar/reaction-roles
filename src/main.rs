@@ -1,18 +1,16 @@
 extern crate lazy_static;
 extern crate dotenv;
 
-use dotenv::dotenv;
-use std::{env, convert::TryFrom, sync::Arc};
 use serenity::{
     async_trait,
-    model::{channel::{Message, Reaction, ReactionType}, id::{MessageId, RoleId}, gateway::Ready},
+    model::{channel::{Reaction, ReactionType}, id::{MessageId, RoleId}, gateway::Ready},
     prelude::*,
 };
 
+use std::{env, convert::TryFrom, sync::{Arc, atomic::{AtomicU64, Ordering}}, fs};
+use dotenv::dotenv;
 use tokio::sync::RwLock;
-use std::borrow::BorrowMut;
-use std::ops::Deref;
-use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+use serde::{Deserialize, Serialize};
 
 struct ReactionMap;
 
@@ -26,6 +24,12 @@ impl TypeMapKey for MessageMap {
     type Value = Arc<AtomicU64>;
 }
 
+#[derive(Serialize, Deserialize)]
+struct Config {
+    message_id: u64,
+    emotes: Vec<String>,
+    role_ids: Vec<u64>,
+}
 
 struct Handler;
 
@@ -103,22 +107,24 @@ impl EventHandler for Handler {
 #[tokio::main]
 async fn main() {
     dotenv().ok();
-    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
 
-    let mut client =
-        Client::builder(&token).event_handler(Handler).await.expect("Err creating client");
+    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
+    let mut client = Client::builder(&token).event_handler(Handler).await.expect("Err creating client");
+
+    let config_raw = fs::read_to_string(env::current_dir().unwrap().join("config.json")).expect("Unable to read config");
+    let config: Config = serde_json::from_str(&config_raw).unwrap();
 
     {
         let mut data = client.data.write().await;
-
         let mut reaction_roles = vec![];
-        reaction_roles.push((ReactionType::try_from("<:tModLoader:884597154117730385>").unwrap(), RoleId(884597587997503508)));
-        reaction_roles.push((ReactionType::try_from("<:minecraft:884598538095427644>").unwrap(), RoleId(884597734785564692)));
-        reaction_roles.push((ReactionType::try_from("<:terminal:884598313402376222>").unwrap(), RoleId(884597681614381106)));
-        reaction_roles.push((ReactionType::try_from("<:terraria:884598921417064519>").unwrap(), RoleId(884597790158782495)));
 
+        for index in 0..config.emotes.len() {
+            reaction_roles.push((ReactionType::try_from(config.emotes[index].as_str()).unwrap(), RoleId(config.role_ids[index])));
+        }
+
+        data.insert::<MessageMap>(Arc::new(AtomicU64::new(config.message_id)));
         data.insert::<ReactionMap>(Arc::new(RwLock::new(reaction_roles)));
-        data.insert::<MessageMap>(Arc::new(AtomicU64::new(884599668049313832)))
+
     }
 
     if let Err(why) = client.start().await {
