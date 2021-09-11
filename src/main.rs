@@ -2,12 +2,30 @@ extern crate lazy_static;
 extern crate dotenv;
 
 use dotenv::dotenv;
-use std::{env, convert::TryFrom};
+use std::{env, convert::TryFrom, sync::Arc};
 use serenity::{
     async_trait,
     model::{channel::{Message, Reaction, ReactionType}, id::{MessageId, RoleId}, gateway::Ready},
     prelude::*,
 };
+
+use tokio::sync::RwLock;
+use std::borrow::BorrowMut;
+use std::ops::Deref;
+use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+
+struct ReactionMap;
+
+impl TypeMapKey for ReactionMap {
+    type Value = Arc<RwLock<Vec<(ReactionType, RoleId)>>>;
+}
+
+struct MessageMap;
+
+impl TypeMapKey for MessageMap {
+    type Value = Arc<AtomicU64>;
+}
+
 
 struct Handler;
 
@@ -21,21 +39,21 @@ impl EventHandler for Handler {
         }
     }
 
-    // bug: it takes almost a second until the role is added... probably my code... ill need to investigate
     async fn reaction_add(&self, ctx: Context, reaction: Reaction) {
-        // todo: cease hardcode
-        if reaction.message_id != MessageId(884599668049313832) {
+        let data_read = ctx.data.read().await;
+        let message_data =
+            data_read.get::<MessageMap>().expect("Expected MessageMap in TypeMap.").clone();
+
+        if reaction.message_id != MessageId(message_data.load(Ordering::SeqCst)) {
             return;
         }
 
-        // global?
-        let mut reaction_roles = vec![];
-        reaction_roles.push((ReactionType::try_from("<:tModLoader:884597154117730385>").unwrap(), RoleId(884597587997503508)));
-        reaction_roles.push((ReactionType::try_from("<:minecraft:884598538095427644>").unwrap(), RoleId(884597734785564692)));
-        reaction_roles.push((ReactionType::try_from("<:terminal:884598313402376222>").unwrap(), RoleId(884597681614381106)));
-        reaction_roles.push((ReactionType::try_from("<:terraria:884598921417064519>").unwrap(), RoleId(884597790158782495)));
+        let reaction_roles_data =
+            data_read.get::<ReactionMap>().expect("Expected ReactionMap in TypeMap.").clone();
 
-        for (emoji, role_id) in reaction_roles.iter() {
+        let reaction_roles = &*reaction_roles_data.read().await;
+
+        for (emoji, role_id) in reaction_roles.into_iter() {
             if emoji != &reaction.emoji {
                 continue;
             }
@@ -53,22 +71,21 @@ impl EventHandler for Handler {
         }
     }
 
-    // bug: same bug
-    // duplicated code.. method off
     async fn reaction_remove(&self, ctx: Context, reaction: Reaction) {
-        // todo: cease hardcode
-        if reaction.message_id != MessageId(884599668049313832) {
+        let data_read = ctx.data.read().await;
+        let message_data =
+            data_read.get::<MessageMap>().expect("Expected MessageMap in TypeMap.").clone();
+
+        if reaction.message_id != MessageId(message_data.load(Ordering::SeqCst)) {
             return;
         }
 
-        // global?
-        let mut reaction_roles = vec![];
-        reaction_roles.push((ReactionType::try_from("<:tModLoader:884597154117730385>").unwrap(), RoleId(884597587997503508)));
-        reaction_roles.push((ReactionType::try_from("<:minecraft:884598538095427644>").unwrap(), RoleId(884597734785564692)));
-        reaction_roles.push((ReactionType::try_from("<:terminal:884598313402376222>").unwrap(), RoleId(884597681614381106)));
-        reaction_roles.push((ReactionType::try_from("<:terraria:884598921417064519>").unwrap(), RoleId(884597790158782495)));
+        let reaction_roles_data =
+            data_read.get::<ReactionMap>().expect("Expected ReactionMap in TypeMap.").clone();
 
-        for (emoji, role_id) in reaction_roles.iter() {
+        let reaction_roles = &*reaction_roles_data.read().await;
+
+        for (emoji, role_id) in reaction_roles.into_iter() {
             if emoji != &reaction.emoji {
                 continue;
             }
@@ -98,6 +115,19 @@ async fn main() {
 
     let mut client =
         Client::builder(&token).event_handler(Handler).await.expect("Err creating client");
+
+    {
+        let mut data = client.data.write().await;
+
+        let mut reaction_roles = vec![];
+        reaction_roles.push((ReactionType::try_from("<:tModLoader:884597154117730385>").unwrap(), RoleId(884597587997503508)));
+        reaction_roles.push((ReactionType::try_from("<:minecraft:884598538095427644>").unwrap(), RoleId(884597734785564692)));
+        reaction_roles.push((ReactionType::try_from("<:terminal:884598313402376222>").unwrap(), RoleId(884597681614381106)));
+        reaction_roles.push((ReactionType::try_from("<:terraria:884598921417064519>").unwrap(), RoleId(884597790158782495)));
+
+        data.insert::<ReactionMap>(Arc::new(RwLock::new(reaction_roles)));
+        data.insert::<MessageMap>(Arc::new(AtomicU64::new(884599668049313832)))
+    }
 
     if let Err(why) = client.start().await {
         println!("Client error: {:?}", why);
