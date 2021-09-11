@@ -10,7 +10,7 @@
 **Built with [serenity](https://github.com/serenity-rs/serenity).**
 
 \- This is my first time using Rust, so this code likely won't have the best practices in it.  
-\- If you found mygit helpful or neat please consider leaving a star ⭐
+\- If you found reaction-roles helpful or neat please consider leaving a star ⭐
 
 ## Usage
 \- **Assuming [Rust](https://www.rust-lang.org/tools/install/) is installed.**
