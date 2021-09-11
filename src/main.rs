@@ -31,14 +31,6 @@ struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    async fn message(&self, ctx: Context, msg: Message) {
-        if msg.content == "!ping" {
-            if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
-                println!("Error sending message: {:?}", why);
-            }
-        }
-    }
-
     async fn reaction_add(&self, ctx: Context, reaction: Reaction) {
         let data_read = ctx.data.read().await;
         let message_data =
