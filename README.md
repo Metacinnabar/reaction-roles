@@ -24,9 +24,12 @@
 Example `.env` file:
 ```
 DISCORD_TOKEN=TOKEN
+RUST_LOG=INFO
 ```
 **`DISCORD_TOKEN`** - Discord bot token for your bot  
  - [How do I get a Discord bot token?](https://discordjs.guide/preparations/setting-up-a-bot-application.html)
+
+**`RUST_LOG`** - Console logging level (`ERROR`, `INFO`, `DEBUG`)
 
 ## Configuration
 Example `config.json` file:
