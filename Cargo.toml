@@ -10,6 +10,7 @@ authors = ["GoodPro712"]
 serenity = { version = "0.10", default-features = false, features = ["client", "gateway", "rustls_backend", "model"] }
 dotenv = "0.15"
 tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
-lazy_static = "1.4.0"
 serde = { version = "1.0.104", features = ["derive"] }
 serde_json = "1.0.48"
+tracing = "0.1.23"
+tracing-subscriber = "0.2"

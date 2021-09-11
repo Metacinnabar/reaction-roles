@@ -54,7 +54,7 @@ The first entry in `emotes` matches the first entry in `role_ids`.
 ## Todo
  - [x] Json config for message id, emotes, and roles
  - [x] Generalize & modularize code
- - [ ] Properly log events to console
+ - [x] Properly log events to console
  - [ ] (Optional config) Log reactions to a channel
  - [ ] (Optional config) DM the user who reacted
 

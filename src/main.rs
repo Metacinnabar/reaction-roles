@@ -1,4 +1,3 @@
-extern crate lazy_static;
 extern crate dotenv;
 mod data;
 
@@ -23,12 +22,14 @@ use std::{
 
 use dotenv::dotenv;
 use tokio::sync::RwLock;
+use tracing::{error, info};
 
 use crate::data::{config::Config, messagemap::MessageMap, reactionmap::ReactionMap};
 
 #[tokio::main]
 async fn main() {
     dotenv().ok();
+    tracing_subscriber::fmt::init();
 
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
     let mut client = Client::builder(&token).event_handler(Handler).await.expect("Err creating client");
@@ -50,7 +51,7 @@ async fn main() {
     }
 
     if let Err(why) = client.start().await {
-        println!("Client error: {:?}", why);
+        error!("Client login error: {:?}", why);
     }
 }
 
@@ -66,8 +67,8 @@ impl EventHandler for Handler {
         handle_reaction(ctx, reaction, false).await;
     }
 
-    async fn ready(&self, _: Context, ready: Ready) {
-        println!("{} is connected!", ready.user.name);
+    async fn ready(&self, _ctx: Context, ready: Ready) {
+        info!("Logged in as {}", ready.user.name);
     }
 }
 
@@ -95,15 +96,15 @@ async fn handle_reaction(ctx: Context, reaction: Reaction, add_role: bool) {
                 if let Ok(mut member) = guild_id.member(&ctx, user_id).await {
                     if add_role {
                         if let Err(err) = member.add_role(&ctx, role_id).await {
-                            eprintln!("role could not be added: {}", err);
+                            error!("Role could not be added: {}", err);
                         }
-                        println!("role {} added to user {} by reacting with {}", role_id, member, emoji)
+                        info!("Role {} added to user {} by reacting with {}.", role_id, member, emoji)
                     }
                     else {
                         if let Err(err) = member.remove_role(&ctx, role_id).await {
-                            eprintln!("role could not be removed: {}", err);
+                            error!("Role could not be removed: {}", err);
                         }
-                        println!("role {} removed from user {} by un-reacting with {}", role_id, member, emoji)
+                        info!("Role {} removed from user {} by un-reacting with {}.", role_id, member, emoji)
                     }
                 }
             }
