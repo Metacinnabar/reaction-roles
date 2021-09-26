@@ -1,9 +1,9 @@
 # reaction-roles
-[![wakatime](https://wakatime.com/badge/github/GoodPro712/reaction-roles.svg)](https://wakatime.com/badge/github/GoodPro712/reaction-roles)
-![GitHub repo size](https://img.shields.io/github/repo-size/goodpro712/reaction-roles)
-![Lines of code](https://img.shields.io/tokei/lines/github/goodpro712/reaction-roles)
-![GitHub license](https://img.shields.io/github/license/goodpro712/reaction-roles)
-![GitHub lastest commit](https://img.shields.io/github/last-commit/goodpro712/reaction-roles)
+[![wakatime](https://wakatime.com/badge/github/Metacinnabar/reaction-roles.svg)](https://wakatime.com/badge/github/Metacinnabar/reaction-roles)
+![GitHub repo size](https://img.shields.io/github/repo-size/Metacinnabar/reaction-roles)
+![Lines of code](https://img.shields.io/tokei/lines/github/Metacinnabar/reaction-roles)
+![GitHub license](https://img.shields.io/github/license/Metacinnabar/reaction-roles)
+![GitHub lastest commit](https://img.shields.io/github/last-commit/Metacinnabar/reaction-roles)
 
 ## Overview
 **Discord reaction role bot implementation in Rust.**  
@@ -14,7 +14,7 @@
 
 ## Usage
 \- **Assuming [Rust](https://www.rust-lang.org/tools/install/) is installed.**
- - Clone the repository (`git clone https://github.com/GoodPro712/reaction-roles.git && cd reaction-roles`)
+ - Clone the repository (`git clone https://github.com/Metacinnabar/reaction-roles.git && cd reaction-roles`)
  - Rename `example.env` to `.env` (`mv example.env .env`)
  - Edit `.env` following [dotenv](#dotenv) (`nano .env`)
  - Edit `config.json` following [configuration](#configuration) (`nano config.json`)
@@ -62,7 +62,7 @@ The first entry in `emotes` matches the first entry in `role_ids`.
  - [ ] (Optional config) DM the user who reacted
 
 ## Support
-For any bug reports, questions, or requests, create an issue via the [issue tracker](https://github.com/GoodPro712/reaction-roles/issues).
+For any bug reports, questions, or requests please create an issue via the [issue tracker](https://github.com/Metacinnabar/reaction-roles/issues).
 
 ## License
-**reaction-roles** is licensed under the [MIT License](https://github.com/GoodPro712/reaction-roles/blob/master/LICENSE).
+**reaction-roles** is licensed under the [MIT License](https://github.com/Metacinnabar/reaction-roles/blob/master/LICENSE).
