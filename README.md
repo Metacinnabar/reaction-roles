@@ -37,8 +37,8 @@ Example `config.json` file:
 {
   "message_id": 884599663049313832,
   "emotes": [
-    "<:emotename:884597154617730385>",
-    "<:emotename2:884598528095427644>"
+    "<:customemotename:884597154617730385>",
+    "😃"
   ],
   "role_ids": [
     884597587997503708,
@@ -51,7 +51,7 @@ The first entry in `emotes` matches the first entry in `role_ids`.
 | key | desc | value example |
 | - | - | - |
 `message_id` | message id for reaction roles | `884599663049313832`
-`emotes` | array of emote ids (fetched with `/:customemote:`) | `[ "<:emotename:884597154617730385>", "<:emotename2:884598528095427644>" ]`
+`emotes` | array of emote ids or unicode for emotes (fetched with `/:emote:`) | `[ "<:emotename:884597154617730385>", "😃" ]`
 `role_ids` | array of role ids | `[ 884597587997503708, 884597734784564692 ]`
 
 ## Todo
@@ -60,6 +60,8 @@ The first entry in `emotes` matches the first entry in `role_ids`.
  - [x] Properly log events to console
  - [ ] (Optional config) Log reactions to a channel
  - [ ] (Optional config) DM the user who reacted
+ - [ ] Multiple server support
+ - [ ] Commands to add reaction roles
 
 ## Support
 For any bug reports, questions, or requests please create an issue via the [issue tracker](https://github.com/Metacinnabar/reaction-roles/issues).
